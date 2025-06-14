@@ -21,7 +21,7 @@ const Folder = ({ title, inheritPosition, myClick }: { title: string, inheritPos
 
     return (
         <Draggable
-            nodeRef={nodeRef}
+            nodeRef={nodeRef as React.RefObject<HTMLElement>}
             position={position}
             onDrag={handleDrag}
             onStart={handleDragStart}
