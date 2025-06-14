@@ -1,99 +1,136 @@
 import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import AudioBars from './AudioBars';
 import AirpodCharge from './icons/AirpodCharge';
 import Marquee from './Marquee';
+import { stageAtom } from '../utils/context';
+import { useAtom } from 'jotai';
 
+type Track = {
+    song: string;
+    art: string;
+    details: string;
+    color: [string, string];
+};
 
-const DynamicIsland = () => {
-    const tracks = {
-        song: ["https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d4/71/d4/d471d4e7-7743-7487-67ee-c6842b6d3ae8/mzaf_17737787135110456163.plus.aac.p.m4a", "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/47/14/e3/4714e377-d7c3-c548-35d8-e64eab7de5e3/mzaf_7178672795846554680.plus.aac.p.m4a", "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/1d/9e/4c/1d9e4cc0-c3ce-2660-d116-86fb386d5920/mzaf_18139705836037492329.plus.aac.p.m4a"],
-        art: ["/song1.jpg", "/song2.jpg", "/song3.jpg"],
-        details: ["places to be ⋅ Fred again... Anderson .Paak & CHIKA", "Toi Et Moi ⋅ Paradis", "Emagination (B-Side) ⋅ Miami Horror"],
-        color: [["from-[#5a7ed1]", "to-[#434449]"], ["from-[#345c6d]", "to-[#d0b8a1]"], ["from-[#d8a1a3]", "to-[#705d6c]"]]
+const TRACKS: Track[] = [
+    {
+        song: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d4/71/d4/d471d4e7-7743-7487-67ee-c6842b6d3ae8/mzaf_17737787135110456163.plus.aac.p.m4a",
+        art: "/song1.jpg",
+        details: "places to be ⋅ Fred again... Anderson .Paak & CHIKA",
+        color: ["from-[#5a7ed1]", "to-[#434449]"]
+    },
+    {
+        song: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/47/14/e3/4714e377-d7c3-c548-35d8-e64eab7de5e3/mzaf_7178672795846554680.plus.aac.p.m4a",
+        art: "/song2.jpg",
+        details: "Toi Et Moi ⋅ Paradis",
+        color: ["from-[#345c6d]", "to-[#d0b8a1]"]
+    },
+    {
+        song: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/1d/9e/4c/1d9e4cc0-c3ce-2660-d116-86fb386d5920/mzaf_18139705836037492329.plus.aac.p.m4a",
+        art: "/song3.jpg",
+        details: "Emagination (B-Side) ⋅ Miami Horror",
+        color: ["from-[#d8a1a3]", "to-[#705d6c]"]
     }
-    const [number, setNumber] = useState(0)
-    const [stage, setStage] = useState<"locked" | "unlocked" | "video" | "art">("locked");
-    const [playing, setPlaying] = useState(false)
+];
+
+const FADE_DURATION = 1500;
+const FADE_STEPS = 10;
+
+const DynamicIsland: React.FC = () => {
+    const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+    const [stage, setStage] = useAtom(stageAtom);
+    const [isPlaying, setIsPlaying] = useState(false);
     const [isFading, setIsFading] = useState(false);
-    const airpodref = useRef<HTMLVideoElement>(null)
-    const audioref = useRef<HTMLAudioElement>(null)
-    const unlockref = useRef<HTMLAudioElement>(null)
-    const playAudio = () => {
-        if (playing) {
-            audioref.current?.pause();
+    const [hasUnlocked, setHasUnlocked] = useState(false);
+
+    const airpodRef = useRef<HTMLVideoElement>(null);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const unlockRef = useRef<HTMLAudioElement>(null);
+
+    const currentTrack = useMemo(() => TRACKS[currentTrackIndex], [currentTrackIndex]);
+
+    const fadeOutAudio = useCallback((audioElement: HTMLAudioElement, callback: () => void) => {
+        const interval = FADE_DURATION / FADE_STEPS;
+        let step = 0;
+
+        const fade = () => {
+            step++;
+            audioElement.volume = Math.max(1 - (step / FADE_STEPS), 0);
+            if (step < FADE_STEPS) {
+                setTimeout(fade, interval);
+            } else {
+                callback();
+            }
+        };
+
+        fade();
+    }, []);
+
+    const handlePlayPause = useCallback(() => {
+        if (isPlaying) {
+            audioRef.current?.pause();
         } else {
-            audioref.current?.play();
+            audioRef.current?.play();
         }
-    };
-    const playAirpods = () => {
-        airpodref.current?.play();
-    }
+    }, [isPlaying]);
+
+    const handleUnlock = useCallback(() => {
+        if (hasUnlocked) return;
+
+        setHasUnlocked(true);
+        setStage("unlocked");
+        unlockRef.current?.play();
+        const timer = setTimeout(() => {
+            setStage("video");
+            airpodRef.current?.play();
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [hasUnlocked, setStage]);
+
     useEffect(() => {
-        const audio = audioref.current;
+        const audio = audioRef.current;
         if (!audio) return;
 
         const handleTimeUpdate = () => {
             const timeRemaining = audio.duration - audio.currentTime;
-            if (!isFading && timeRemaining <= 1500 / 1000) {
+            if (!isFading && timeRemaining <= FADE_DURATION / 1000) {
                 setIsFading(true);
                 fadeOutAudio(audio, () => {
-                    setNumber((prev) => (prev + 1) % 3);
+                    setCurrentTrackIndex((prev) => (prev + 1) % TRACKS.length);
                     setIsFading(false);
                 });
             }
         };
 
         audio.addEventListener("timeupdate", handleTimeUpdate);
-        return () => {
-            audio.removeEventListener("timeupdate", handleTimeUpdate);
-        };
-    }, [number, isFading]);
+        return () => audio.removeEventListener("timeupdate", handleTimeUpdate);
+    }, [currentTrackIndex, isFading, fadeOutAudio]);
 
-    const fadeOutAudio = (audioElement: HTMLAudioElement, callback: () => void) => {
-        const steps = 10;
-        const interval = 1500 / steps;
-        let step = 0;
-
-        const fade = () => {
-            step++;
-            audioElement.volume = Math.max(1 - (step / steps), 0);
-            if (step < steps) {
-                setTimeout(fade, interval);
-            } else {
-                callback(); // switch track
-            }
-        };
-
-        fade();
-    };
-
-    const unlockTimer = () => {
-        const timer = setTimeout(() => { setStage("video"); playAirpods(); }, 1000)
-        return () => clearTimeout(timer)
-    }
+    const handleVideoEnd = useCallback(() => {
+        setStage("art");
+        audioRef.current?.play();
+        setIsPlaying(true);
+    }, [setStage]);
 
     return (
         <div className="select-none rounded-b-xl transition duration-300 ease-in-out hover:scale-110 hover:shadow-md group">
             <div className={`relative flex h-9 origin-top overflow-hidden rounded-b-xl text-white transition-all duration-300 w-50 scale-100 ${stage === "art" ? "group-hover:h-16" : ""}`}>
                 <div className="h-full w-full rounded-b-xl bg-black">
                     <audio
-                        ref={audioref}
+                        ref={audioRef}
                         autoPlay
-                        src={tracks.song[number]}
-                        onPause={() => setPlaying(false)}
+                        src={currentTrack.song}
+                        onPause={() => setIsPlaying(false)}
                         onPlay={() => {
-                            setPlaying(true);
-                            if (audioref.current) {
-                                audioref.current.volume = 1; // reset volume for new track
+                            setIsPlaying(true);
+                            if (audioRef.current) {
+                                audioRef.current.volume = 1;
                             }
                         }}
                     />
-                    <div className="absolute left-0 top-0 flex h-9 items-center" onClick={() => { setStage("unlocked"); unlockref.current?.play(); unlockTimer() }}>
-                        <audio
-                            src={"unlock.wav"}
-                            ref={unlockref}
-                        />
+                    <div className="absolute left-0 top-0 flex h-9 items-center" onClick={handleUnlock} style={{ cursor: hasUnlocked ? 'default' : 'pointer' }}>
+                        <audio src="unlock.wav" ref={unlockRef} />
                         <div className="pl-2.5">
                             <svg
                                 className={`size-[18px] absolute left-2.5 top-2 fill-current transition-all duration-200 ${stage === "locked" || stage === "unlocked" ? "backdrop-opacity-100" : "opacity-0"}`}
@@ -111,34 +148,32 @@ const DynamicIsland = () => {
                                 />
                             </svg>
                             <div className={`transition-all duration-200 ${stage === "video" ? "backdrop-opacity-100" : "opacity-0"}`}>
-                                <video ref={airpodref} src="airpods.mp4" height={28} width={28} onEnded={() => { setStage("art"); playAudio(); setPlaying(true) }}></video>
+                                <video ref={airpodRef} src="airpods.mp4" height={28} width={28} onEnded={handleVideoEnd} />
                             </div>
                             <div className={`absolute top-2 transition-all duration-200 ${stage === "art" ? "backdrop-opacity-100 group-hover:opacity-100" : "opacity-0"}`}>
-                                <Image className='rounded-sm' src={tracks.art[number]} alt='nigga' width={20} height={20} />
+                                <Image className='rounded-sm' src={currentTrack.art} alt='Album art' width={20} height={20} />
                             </div>
                         </div>
                     </div>
-                    <div className="absolute right-0 top-0 flex h-10 items-center"></div>
                     <div className={`pointer-events-none absolute bottom-0 left-0 right-0 flex origin-top justify-center pb-[11px] text-xs font-semibold text-stone-300/85 opacity-0 ${stage === "art" ? "group-hover:opacity-100" : ""} transition-opacity duration-300 [mask-image:linear-gradient(to_left,rgba(0,0,0,0)_7%,rgba(0,0,0,1)_11%,rgba(0,0,0,1)_89%,rgba(0,0,0,0)_93%)]`}>
-                        <Marquee text={`🎵 ${tracks.details[number]}`} />
+                        <Marquee text={`🎵 ${currentTrack.details}`} />
                     </div>
-                    <div className="absolute right-0 top-0 flex h-10 items-center" onClick={() => { setPlaying(!playing); playAudio() }}>
+                    <div className="absolute right-0 top-0 flex h-10 items-center" onClick={handlePlayPause}>
                         <div className="group pr-[9px]">
                             {stage === "video" ? (
                                 <>
                                     <AirpodCharge />
-                                    <audio autoPlay src={"/connect.mp3"} />
+                                    <audio autoPlay src="/connect.mp3" />
                                 </>
                             ) : stage === "art" ? (
-                                <AudioBars playing={playing} color={tracks.color[number]} />
-                            ) : ""}
+                                <AudioBars playing={isPlaying} color={currentTrack.color} />
+                            ) : null}
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default DynamicIsland
+export default DynamicIsland;

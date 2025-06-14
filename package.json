@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "jotai": "^2.12.5",
     "next": "15.3.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-draggable": "^4.4.6",
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

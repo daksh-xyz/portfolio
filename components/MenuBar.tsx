@@ -6,7 +6,6 @@ import Image from 'next/image';
 import BatteryIcon from './icons/Battery';
 import Wifi from './icons/Wifi';
 import Control from './icons/Control';
-import DynamicIsland from './DynamicIsland';
 
 const getRandomInt = (min: number, max: number) => {
     min = Math.ceil(min);
@@ -61,11 +60,6 @@ const MenuBar = () => {
                 <div className='text-sm select-none cursor-default'>Window</div>
                 <div className='text-sm select-none cursor-default'>Help</div>
                 <About visibility={visibility} />
-            </div>
-            <div className='relative'>
-                <div className='absolute -top-2 -left-37'>
-                    <DynamicIsland />
-                </div>
             </div>
             <div className='flex gap-4 align-middle'>
                 <div className='self-center justify-center transition-normal'>
