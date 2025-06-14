@@ -1,19 +1,23 @@
-import Image from 'next/image'
-import Link from 'next/link'
 import React, { useRef, useState } from 'react'
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { CgChevronLeft, CgChevronRight } from 'react-icons/cg'
+import FinderLeft from './FinderLeft'
+import FinderContainer from './FinderContainer'
 
-const Finder = ({
+type AppTitle = 'indiSign' | 'Fake News Detector' | 'YT Video Summariser';
+
+interface FinderProps {
+    title: AppTitle;
+    myClick: (title: AppTitle) => void;
+    isActive: boolean;
+    onActivate: () => void;
+}
+
+const Finder: React.FC<FinderProps> = ({
     title,
     myClick,
     isActive,
     onActivate
-}: {
-    title: string,
-    myClick: (title: string) => void,
-    isActive: boolean,
-    onActivate: () => void
 }) => {
     const nodeRef = useRef<HTMLDivElement>(null)
     const [position, setPosition] = useState({ x: 150, y: 150 })
@@ -51,7 +55,7 @@ const Finder = ({
                 onClick={handleClick}
             >
                 <div className='bg-black/15 handle backdrop-blur-2xl w-1/4 max-w-50 rounded-l-md'>
-                    <div className='flex w-14 ml-1'>
+                    <div className='flex w-14 h-10 ml-1'>
                         <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => myClick(title)}>
                             <circle cx="13" cy="20" r="5" fill="#ff5f57" />
                         </svg>
@@ -61,6 +65,10 @@ const Finder = ({
                         <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => { setPosition({ x: 0, y: -210 }); setDimension("w-full h-200") }} >
                             <circle cx="13" cy="20" r="5" fill="#27c83f" />
                         </svg>
+                    </div>
+                    <div>
+                        <p className='ml-3 text-[12px] text-white/85 brightness-50 font-bold subpixel-antialiased'>Favourites</p>
+                        <FinderLeft title={title} />
                     </div>
                 </div>
                 <div className='bg-neutral-800 w-full rounded-r-md p-2'>
@@ -76,25 +84,7 @@ const Finder = ({
                             </svg>
                         </div>
                     </div>
-                    <div className='grid grid-cols-5 gap-2 mt-1'>
-                        <div className='w-24'>
-                            {title === "Desktop" ? (
-                                <Link href={"https://daksh-xyz-youtubesummarizer.streamlit.app"} target='_blank' >
-                                    <Image src={"/safari.png"} alt='safari' width={100} height={100} className='select-none w-14 h-14 m-auto' draggable="false" />
-                                    <p className='text-sm/tight wrap-break-word text-center'>YTVideo Summariser</p>
-                                </Link>) : title === "Documents" ? (
-                                    <Link href={"https://indi-sign.vercel.app/"} target='_blank' >
-                                        <Image src={"/safari.png"} alt='safari' width={100} height={100} className='select-none w-14 h-14 m-auto' draggable="false" />
-                                        <p className='text-sm/tight wrap-break-word text-center'>IndiSign</p>
-                                    </Link>
-                                ) : (
-                                <Link href={"https://daksh-xyz-fake-news-detector.streamlit.app/"} target='_blank' >
-                                    <Image src={"/safari.png"} alt='safari' width={100} height={100} className='select-none w-14 h-14 m-auto' draggable="false" />
-                                    <p className='text-sm/tight wrap-break-word text-center'>Fake News Detector</p>
-                                </Link>
-                            )}
-                        </div>
-                    </div>
+                    <FinderContainer title={title} />
                 </div>
             </div>
         </Draggable>

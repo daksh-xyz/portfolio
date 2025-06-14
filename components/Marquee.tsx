@@ -19,6 +19,7 @@ const Marquee = ({ text }: MarqueeProps) => {
                     animation: 'scroll-text 6s linear infinite'
                 }}>
                     {text}
+                    <span className='ml-40'>{text}</span>
                 </span>
                 <style jsx>{`
                         @keyframes scroll-text {

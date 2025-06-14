@@ -2,6 +2,7 @@ import Image from 'next/image';
 import React, { useState, useRef } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 
+
 const Folder = ({ title, inheritPosition, myClick }: { title: string, inheritPosition: { x: number, y: number }, myClick: (title: string) => void }) => {
     const [position, setPosition] = useState(inheritPosition);
     const [isDragging, setIsDragging] = useState(false);
@@ -30,7 +31,7 @@ const Folder = ({ title, inheritPosition, myClick }: { title: string, inheritPos
         >
             <div ref={nodeRef} className={`w-18 h-18 items-center justify-center flex flex-col rounded-md ${isDragging ? 'opacity-75' : ''}`} onDoubleClick={() => myClick(title)}>
                 <Image width="48" height="48" src={"/folder.png"} alt="mac-folder" draggable="false" />
-                <p className="text-white text-sm">{title}</p>
+                <p className="text-white text-sm text-center">{title}</p>
             </div>
         </Draggable>
     );
