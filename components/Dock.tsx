@@ -41,13 +41,13 @@ const Dock = () => {
         },
         {
             name: "Safari",
-            icon: "Safari.png",
+            icon: "safari.png",
             canOpen: true,
             link: 'https://google.com'
         },
         {
             name: "Bin",
-            icon: "Bin.png",
+            icon: "bin.png",
             canOpen: false,
             link: ''
         },
