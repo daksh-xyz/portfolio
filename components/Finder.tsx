@@ -4,11 +4,11 @@ import { CgChevronLeft, CgChevronRight } from 'react-icons/cg'
 import FinderLeft from './FinderLeft'
 import FinderContainer from './FinderContainer'
 
-type AppTitle = 'indiSign' | 'Fake News Detector' | 'YT Video Summariser';
+type AppTitle = 'indiSign' | 'Fake News Detector' | 'YT Video Summariser' | 'Desktop';
 
 interface FinderProps {
-    title: AppTitle;
-    myClick: (title: AppTitle) => void;
+    title: AppTitle | "Desktop";
+    myClick: (title: AppTitle | "Desktop") => void;
     isActive: boolean;
     onActivate: () => void;
 }
@@ -23,6 +23,7 @@ const Finder: React.FC<FinderProps> = ({
     const [position, setPosition] = useState({ x: 150, y: 150 })
     const [isDragging, setIsDragging] = useState(false)
     const [dimension, setDimension] = useState("w-150 h-70")
+    const [cols, setCols] = useState("grid-cols-5")
 
     const handleDrag = (_e: DraggableEvent, data: DraggableData) => {
         setPosition({ x: data.x, y: data.y });
@@ -59,10 +60,10 @@ const Finder: React.FC<FinderProps> = ({
                         <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => myClick(title)}>
                             <circle cx="13" cy="20" r="5" fill="#ff5f57" />
                         </svg>
-                        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => { setPosition({ x: 400, y: 70 }); setDimension("w-150 h-70") }}>
+                        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => { setPosition({ x: 400, y: 70 }); setDimension("w-150 h-70"); setCols("grid-cols-5") }}>
                             <circle cx="13" cy="20" r="5" fill="#febc2e" />
                         </svg>
-                        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => { setPosition({ x: 0, y: -210 }); setDimension("w-full h-200") }} >
+                        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => { setPosition({ x: 0, y: -210 }); setDimension("w-full h-200"); setCols("grid-cols-12") }} >
                             <circle cx="13" cy="20" r="5" fill="#27c83f" />
                         </svg>
                     </div>
@@ -84,7 +85,7 @@ const Finder: React.FC<FinderProps> = ({
                             </svg>
                         </div>
                     </div>
-                    <FinderContainer title={title} />
+                    <FinderContainer title={title} cols={cols} />
                 </div>
             </div>
         </Draggable>

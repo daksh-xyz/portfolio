@@ -7,3 +7,4 @@ type AppTitle = 'Recents' | 'Desktop' | 'Documents' | 'indiSign' | 'Fake News De
 
 export const stageAtom = atom<StageType>("locked");
 export const titleAtom = atom<AppTitle>("");
+export const desktopFinderAtom = atom(false)

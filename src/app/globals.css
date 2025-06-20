@@ -31,6 +31,21 @@ body {
   font-family: "San Francisco";
 }
 
+.speech-bubble-right::before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #262626;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -16px;
+}
+
+
 @keyframes playing {
 
   0%,

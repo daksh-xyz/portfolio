@@ -6,7 +6,6 @@ interface AudioBarsProps {
 }
 
 const AudioBars = ({ playing, color }: AudioBarsProps) => {
-    console.log(color)
     return (
         <>
             <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100">
