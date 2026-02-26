@@ -3,6 +3,7 @@ import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { CgChevronLeft, CgChevronRight } from 'react-icons/cg'
 import FinderLeft from './FinderLeft'
 import FinderContainer from './FinderContainer'
+import WindowControl from '../components/icons/WindowControl'
 
 type AppTitle = 'indiSign' | 'Fake News Detector' | 'YT Video Summariser' | 'Desktop';
 
@@ -56,16 +57,27 @@ const Finder: React.FC<FinderProps> = ({
                 onClick={handleClick}
             >
                 <div className='bg-black/15 handle backdrop-blur-2xl w-1/4 max-w-50 rounded-l-md'>
-                    <div className='flex w-14 h-10 ml-1'>
-                        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => myClick(title)}>
-                            <circle cx="13" cy="20" r="5" fill="#ff5f57" />
-                        </svg>
-                        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => { setPosition({ x: 400, y: 70 }); setDimension("w-150 h-70"); setCols("grid-cols-5") }}>
-                            <circle cx="13" cy="20" r="5" fill="#febc2e" />
-                        </svg>
-                        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => { setPosition({ x: 0, y: -210 }); setDimension("w-full h-200"); setCols("grid-cols-12") }} >
-                            <circle cx="13" cy="20" r="5" fill="#27c83f" />
-                        </svg>
+                    <div className='flex w-14 h-10 ml-2 mt-2 group'>
+                        {/* <svg className='cursor-pointer' width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => myClick(title)}>
+                            <circle cx="10" cy="20" r="5" fill="#ff5f57" />
+                        </svg> */}
+                        <WindowControl color={"#ff5f57"} lineColor={'#822a2a'} handleClick={() => {
+                            myClick(title)
+                        }} />
+                        <WindowControl color={"#febc2e"} lineColor={'#985600'} handleClick={() => {
+                            setPosition({ x: 400, y: 70 });
+                            setDimension("w-150 h-70");
+                            setCols("grid-cols-5");
+                        }} />
+                        <WindowControl color={"#27c83f"} lineColor={'#135f19'} handleClick={() => {
+                            setPosition({ x: 0, y: -215 });
+                            setDimension("w-full h-190");
+                            setCols("grid-cols-5");
+                        }} />
+
+                        {/* <svg className='cursor-pointer' width="100" height="100" xmlns="http://www.w3.org/2000/svg" onClick={() => { setPosition({ x: 0, y: -215 }); setDimension("w-full h-185"); setCols("grid-cols-12") }} >
+                            <circle cx="10" cy="20" r="5" fill="#27c83f" />
+                        </svg> */}
                     </div>
                     <div>
                         <p className='ml-3 text-[12px] text-white/85 brightness-50 font-bold subpixel-antialiased'>Favourites</p>
@@ -77,7 +89,7 @@ const Finder: React.FC<FinderProps> = ({
                         <div className='flex gap-2 items-center ml-2'>
                             <div><CgChevronLeft size={24} color='#444444' /></div>
                             <div><CgChevronRight size={24} color='#444444' /></div>
-                            <div className='font-black ml-1'>{title}</div>
+                            <div className='font-black ml-1 select-none'>{title}</div>
                         </div>
                         <div className='mr-2'>
                             <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="16px" height="16px" viewBox="0 0 122.879 119.799" enableBackground="new 0 0 122.879 119.799" xmlSpace="preserve"><g>

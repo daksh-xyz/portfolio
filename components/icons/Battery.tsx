@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-const BatteryIcon = ({ battery }: { battery: number }) => {
+const BatteryIcon = ({ battery }: { battery: number | null }) => {
     const [mounted, setMounted] = useState(false)
     useEffect(() => {
         setMounted(true)
@@ -22,10 +22,10 @@ const BatteryIcon = ({ battery }: { battery: number }) => {
                 <rect
                     x="2"
                     y="2.5"
-                    width={battery}
+                    width={battery!}
                     height="8"
                     rx="1"
-                    fill={battery > 4 ? 'white' : 'red'}
+                    fill={battery! > 4 ? 'white' : 'red'}
                     fillOpacity="0.9"
                 />
             </g>

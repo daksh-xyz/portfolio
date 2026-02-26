@@ -1,17 +1,12 @@
 'use client';
 
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import MenuBarDate from './Date'
 import Image from 'next/image';
 import BatteryIcon from './icons/Battery';
 import Wifi from './icons/Wifi';
 import Control from './icons/Control';
-
-const getRandomInt = (min: number, max: number) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+import useBattery from '../utils/getBattery';
 
 type AboutProps = {
     visibility: boolean;
@@ -42,7 +37,7 @@ const About = ({ visibility }: AboutProps) => {
 
 const MenuBar = () => {
     const [visibility, setVisibility] = useState(false)
-    const battery = useMemo(() => getRandomInt(1, 20), [])
+    const { batteryLevel, isSupported } = useBattery();
     return (
         <div className='w-full bg-orange-50/10 px-5 text-orange-50 backdrop-blur-xl rounded-t-md p-2 flex justify-between'>
             <div className='flex gap-4'>
@@ -63,7 +58,7 @@ const MenuBar = () => {
             </div>
             <div className='flex gap-4 align-middle'>
                 <div className='self-center justify-center transition-normal'>
-                    <BatteryIcon battery={battery} />
+                    <BatteryIcon battery={isSupported ? batteryLevel : 9} />
                 </div>
                 <div className='self-center justify-center'>
                     <Wifi />

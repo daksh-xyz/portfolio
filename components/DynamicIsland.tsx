@@ -125,7 +125,7 @@ const DynamicIsland: React.FC = () => {
                         onPlay={() => {
                             setIsPlaying(true);
                             if (audioRef.current) {
-                                audioRef.current.volume = 1;
+                                audioRef.current.volume = 0.4;
                             }
                         }}
                     />

@@ -49,7 +49,7 @@ const Application = ({ name, icon, canOpen, link }: ApplicationProps) => {
         <div className='group text-center'>
             <div className='absolute bottom-23 bg-neutral-800/80 backdrop-blur-md rounded-md border-1 border-orange-50/30 w-18 py-1 speech-bubble-right text-sm hidden group-hover:block'>{name}</div>
             <div className='w-18 h-18 flex rounded-md' onClick={() => canOpen && launchApp({ url: link, title: name, w: 800, h: 500, bruh: () => setDesktopFinderVisibility(!desktopFinderVisibility) })} >
-                <Image src={`/icons/${icon}`} width={100} height={100} alt='df' />
+                <Image src={`/icons/${icon}`} width={100} height={100} alt='df' draggable={'false'} />
             </div>
             {canOpen ? (
                 <div className='h-1 w-18'>

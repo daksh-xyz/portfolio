@@ -70,6 +70,7 @@ const Home = () => {
 
       <div className={`select-none mt-10 w-full h-screen text-center ease-in-out text-purple-300/85 transition-all duration-300 ${stage === "locked" ? "opacity-100" : "opacity-0 invisible"}`}>
         <LockScreen />
+        <div className='opacity-60'>Click the lock icon to unlock</div>
       </div>
 
       <div className={`absolute top-10 z-1 overflow-hidden h-[95%] w-screen ${stage === "locked" ? "opacity-0 invisible" : "opacity-100"}`}>
@@ -106,7 +107,7 @@ const Home = () => {
           }
         </div>
       </div>
-      <div className={`absolute bottom-10 left-[50%] -translate-x-[50%] z-5 ease-in-out duration-300 ${stage === "locked" ? "opacity-0 translate-y-10 invisible" : "opacity-100"} `}>
+      <div className={`absolute bottom-2 left-[50%] -translate-x-[50%] z-5 select-none ease-in-out duration-300 ${stage === "locked" ? "opacity-0 translate-y-10 invisible" : "opacity-100"} `}>
         <Dock />
       </div>
     </div>

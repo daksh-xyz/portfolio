@@ -66,6 +66,7 @@ const FinderContainer: React.FC<FinderContainerProps> = ({ title, cols }) => {
                         href={appLink.url}
                         target='_blank'
                         className="block transition-transform hover:scale-105"
+                        draggable={'false'}
                     >
                         <Image
                             src={appLink.icon}
@@ -73,7 +74,7 @@ const FinderContainer: React.FC<FinderContainerProps> = ({ title, cols }) => {
                             width={100}
                             height={100}
                             className='select-none w-14 h-14 m-auto'
-                            draggable="false"
+                            draggable={'false'}
                         />
                         <p className='text-sm/tight wrap-break-word text-center mt-1'>{appLink.title}</p>
                     </Link>
