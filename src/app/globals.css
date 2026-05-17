@@ -5,17 +5,13 @@
   --foreground: #171717;
 }
 
-@font-face {
-  font-family: "San Francisco";
-  font-weight: 400;
-  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --animate-moveRotateShape: moveRotateShape infinite;
+  --animate-morphShape: morphShape infinite;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,32 +24,69 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "San Francisco";
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.speech-bubble-right::before {
-  content: "";
-  width: 0px;
-  height: 0px;
-  position: absolute;
-  border-bottom: 8px solid transparent;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 8px solid #262626;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: -16px;
+.blob {
+  width: 500px;
+  aspect-ratio: 1/1;
+  border-radius: 30% 70% 70% 30% / 30% 40% 70% 70%;
+  filter: blur(50px);
 }
 
+@layer utilities {
+  .animate-moveRotateShape {
+    animation: var(--animate-moveRotateShape);
+  }
 
-@keyframes playing {
+  .animate-morphShape {
+    animation: var(--animate-morphShape);
+  }
+
+  .animate-blob {
+    animation: var(--animate-moveRotateShape), var(--animate-morphShape);
+  }
+}
+
+@keyframes moveRotateShape {
+  0%,
+  100% {
+    transform: translate(10vw, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(20vw, 10vh) rotate(90deg);
+  }
+  
+  50% {
+    transform: translate(40vw, 20vh) rotate(180deg);
+  }
+  
+  75% {
+    transform: translate(60vw, 30vh) rotate(270deg);
+  }
+  
+}
+
+@keyframes morphShape {
 
   0%,
   100% {
-    transform: scaleY(0.4);
+    border-radius: 30% 70% 70% 30% / 30% 40% 70% 70%;
   }
 
-  50% {
-    transform: scaleY(0.7);
+  20% {
+    border-radius: 40% 65% 50% 50% / 40% 35% 35% 65%;
+  }
+
+  40% {
+    border-radius: 35% 65% 65% 35% / 65% 50% 50% 25%;
+  }
+
+  60% {
+    border-radius: 40% 65% 50% 50% / 30% 30% 70% 75%;
+  }
+  
+  80% {
+    border-radius: 40% 60% 40% 60% / 50% 50% 50% 60%;
   }
 }

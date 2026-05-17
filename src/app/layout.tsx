@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
-import localFont from 'next/font/local';
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const SF = localFont({
-  src: '../../public/fonts/SFPro-Bold.otf'
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Daksh Lal's MacBook",
-  description: "Daksh Lal's Portfolio",
+  title: "Daksh Lal Portfolio",
+  description: "A developer portfolio by Daksh Lal",
 };
 
 export default function RootLayout({
@@ -17,13 +23,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <link rel="icon" href="/window.svg" sizes="any" />
-      <body
-        className={`${SF} antialiased`}
-      >
-        {children}
-      </body>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }
